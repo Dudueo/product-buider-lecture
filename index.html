@@ -8,12 +8,14 @@
     <style>
         * {
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
 
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(135deg, #f5f7fa, #dfe9f3);
+            color: #333;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -21,7 +23,36 @@
             padding: 40px 20px;
         }
 
-        .container {
+        body.dark-mode {
+            background: linear-gradient(135deg, #121218, #1e1e2f);
+            color: #f1f1f1;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #2a2a3c;
+            color: #f1f1f1;
+            border-color: #3e3e55;
+        }
+
+        .container, .comments-container {
             width: 100%;
             max-width: 600px;
             background: white;
@@ -29,6 +60,13 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+        }
+
+        body.dark-mode .container,
+        body.dark-mode .comments-container {
+            background: #1e1e2f;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid #2a2a3c;
         }
 
         h1 {
@@ -39,12 +77,20 @@
             font-size: 26px;
         }
 
+        body.dark-mode h1 {
+            color: #ffffff;
+        }
+
         .description {
             color: #666;
             margin-bottom: 30px;
             text-align: center;
             font-size: 15px;
             line-height: 1.5;
+        }
+
+        body.dark-mode .description {
+            color: #b0b0c0;
         }
 
         .form-group {
@@ -59,6 +105,10 @@
             font-size: 14px;
         }
 
+        body.dark-mode label {
+            color: #d0d0e0;
+        }
+
         input[type="text"],
         input[type="email"],
         input[type="tel"],
@@ -68,8 +118,18 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 15px;
-            transition: border-color 0.2s, box-shadow 0.2s;
             font-family: inherit;
+            background: #fff;
+            color: #333;
+        }
+
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="email"],
+        body.dark-mode input[type="tel"],
+        body.dark-mode textarea {
+            background: #252536;
+            border-color: #3e3e55;
+            color: #ffffff;
         }
 
         input[type="text"]:focus,
@@ -86,7 +146,7 @@
             min-height: 120px;
         }
 
-        button {
+        button[type="submit"] {
             width: 100%;
             border: none;
             padding: 14px;
@@ -100,11 +160,11 @@
             margin-top: 10px;
         }
 
-        button:hover {
+        button[type="submit"]:hover {
             background: #315fe0;
         }
 
-        button:active {
+        button[type="submit"]:active {
             transform: translateY(1px);
         }
 
@@ -115,13 +175,8 @@
             color: #888;
         }
 
-        .comments-container {
-            width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 30px 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        body.dark-mode .footer-note {
+            color: #8a8a9e;
         }
 
         .comments-container h2 {
@@ -130,10 +185,18 @@
             margin-top: 0;
             margin-bottom: 20px;
         }
+
+        body.dark-mode .comments-container h2 {
+            color: #ffffff;
+        }
     </style>
 </head>
 
 <body>
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    🌙 다크모드
+</button>
 
 <div class="container">
     <h1>🤝 제휴 및 협력 문의</h1>
@@ -198,6 +261,37 @@
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+
+<script>
+    // Theme toggle logic
+    function toggleTheme() {
+        const body = document.body;
+        const toggleBtn = document.getElementById('themeToggle');
+        
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ 화이트모드';
+        } else {
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 다크모드';
+        }
+    }
+
+    // Load saved theme on startup
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const toggleBtn = document.getElementById('themeToggle');
+        
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            toggleBtn.textContent = '☀️ 화이트모드';
+        } else {
+            toggleBtn.textContent = '🌙 다크모드';
+        }
+    });
+</script>
 
 </body>
 </html>
